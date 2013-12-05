@@ -4,15 +4,114 @@
 
 	<script src="http://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
 
+	<style type="text/css">
+		h1 {
+			margin-left: 50px;
+		}
+		#intro {
+			margin-left: 50px;
+			width: 500px;
+		}
+
+		.domain {
+			fill: none;
+			stroke: blue;
+		}
+
+		.tick line {
+			stroke: blue;
+		}
+
+		.tick line {
+			font-size: 10px;
+		}
+
+		circle {
+			fill: none;
+			stroke: black;
+		}
+
+	</style>
+
 </head>
 <body>
-	<img src="working/sketch1.jpeg">
+	<h1>Buying a spot in the top flight</h1>
+	<div id="intro">
+	<p>
+		The Premier League is the biggest soccer competition in England, with high stakes. If a team finishes in the bottom three, they're "relegated" from the league -- demoted to a minor league. Year to year, the same five clubs tend to dominate the competition, subjecting the league to critcism of wealth inequities.
+	</p>
+	<p>
+		With no spending caps, the top teams can pay any amount of money to acquire the world's top talent, while smaller teams often languish and face relegation. Can a club buy survival in the Premier League?
+	</p>
+	</div>
 
 	<script type="text/javascript">
 		d3.csv("data.csv", function(data){
+			data.forEach(function(d) {
+				d["Total.Seasons"] = +d["Total.Seasons"];
+	        	d["Wages"] = +d["Wages"];
+	        	d["Income"] = +d["Income"];
+	        });
   			console.log(data);
+
+
+  		var margin = {top: 20, right: 20, bottom: 20, left: 20};
+    		width = 750 - margin.left - margin.right,
+    		height = 500 - margin.top - margin.bottom;
+
+    	w = 800;
+    	h = 500;
+    	/*
+		var svg = d3.select(".chart").append("svg")
+ 		   .attr("width", width + margin.left + margin.right)
+ 		   .attr("height", height + margin.top + margin.bottom)
+ 			 .append("g")
+  		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  		*/
+
+  		//Create SVG element
+		var svg = d3.select("body")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+        .append("g")
+    		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var xScale = d3.scale.linear()
+      		.domain([1, 22])
+      		.range([0, width]);
+
+      	var yScale = d3.scale.linear()
+      		.domain([0, 250])
+      		.range([height, 0]);
+
+      	var xAxis = d3.svg.axis()
+    		.tickFormat(function(d) { return d; })
+    		.scale(xScale);
+
+      	svg.append("g")
+ 			.attr("class", "axis")
+ 			.attr("transform", "translate(0, " + height + ")")
+ 			.call(xAxis)
+
+        svg.selectAll("circle")
+   			.data(data)
+  			.enter()
+   			.append("circle")
+   		.attr("cx", function(d, i) {
+        	return xScale(d["Total.Seasons"]);
+   		})
+   		.attr("cy", function(d) {
+        	return yScale(d["Wages"]);
+   		})
+   		.attr("r", function(d) {
+   			//return Math.sqrt(d["Income"]);
+   			return (d["Income"])/5;
+   		});
+
 		});
 
 	</script>
+
 </body>
 </html>
