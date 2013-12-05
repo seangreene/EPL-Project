@@ -1,8 +1,18 @@
 <html>
 <head>
-	<title></title>
+	<title>Premier League</title>
+
+	<script src="http://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+
 </head>
 <body>
-	<img src="working/Rplot1.jpeg">
+	<img src="working/sketch1.jpeg">
+
+	<script type="text/javascript">
+		d3.csv("data.csv", function(data){
+  			console.log(data);
+		});
+
+	</script>
 </body>
 </html>
