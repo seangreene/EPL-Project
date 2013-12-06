@@ -9,17 +9,34 @@
 			margin-left: 50px;
 		}
 		#intro {
-			margin-left: 50px;
+			position: absolute;
+			left: 650px;
 			width: 500px;
+		}
+
+		svg {
+			position: relative;
 		}
 
 		.domain {
 			fill: none;
-			stroke: blue;
+			stroke: black;
+		}
+
+		.axis path,
+		.axis line {
+			fill: none;
+			stroke: black;
+			shape-rendering: crispEdges;
+		}
+
+		.axis text {
+			font-family: sans-serif;
+			font-size: 11px;
 		}
 
 		.tick line {
-			stroke: blue;
+			stroke: black;
 		}
 
 		.tick line {
@@ -27,22 +44,40 @@
 		}
 
 		circle {
-			fill: none;
+			fill: cyan;
+			stroke: blue;
+			opacity:0.3;
+			filter:alpha(opacity=40); /* For IE8 and earlier */
+		}
+
+		.team {
+			font-family: Helvetica;
+			font-size: 10px;
+		}
+
+		.line {
+			fill:none;
 			stroke: black;
+			opacity: 0.3;
 		}
 
 	</style>
 
 </head>
 <body>
-	<h1>Buying a spot in the top flight</h1>
 	<div id="intro">
+	<h1>Buying a spot in the top flight</h1>
 	<p>
 		The Premier League is the biggest soccer competition in England, with high stakes. If a team finishes in the bottom three, they're "relegated" from the league -- demoted to a minor league. Year to year, the same five clubs tend to dominate the competition, subjecting the league to critcism of wealth inequities.
 	</p>
 	<p>
 		With no spending caps, the top teams can pay any amount of money to acquire the world's top talent, while smaller teams often languish and face relegation. Can a club buy survival in the Premier League?
 	</p>
+
+	<h4>
+		2011-12 Season placement compared to total player wages 
+	</h4>
+	
 	</div>
 
 	<script type="text/javascript">
@@ -51,34 +86,26 @@
 				d["Total.Seasons"] = +d["Total.Seasons"];
 	        	d["Wages"] = +d["Wages"];
 	        	d["Income"] = +d["Income"];
+	        	d["Position"] = +d["Position"];
+	        	d["Club"] = d["Club"];
 	        });
   			console.log(data);
 
 
-  		var margin = {top: 20, right: 20, bottom: 20, left: 20};
-    		width = 750 - margin.left - margin.right,
-    		height = 500 - margin.top - margin.bottom;
-
-    	w = 800;
-    	h = 500;
-    	/*
-		var svg = d3.select(".chart").append("svg")
- 		   .attr("width", width + margin.left + margin.right)
- 		   .attr("height", height + margin.top + margin.bottom)
- 			 .append("g")
-  		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  		*/
+  		var margin = {top: 20, right: 100, bottom: 20, left: 100};
+    		width = 1500 - margin.left - margin.right,
+    		height = 800 - margin.top - margin.bottom;
 
   		//Create SVG element
 		var svg = d3.select("body")
             .append("svg")
-            .attr("width", w)
-            .attr("height", h)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
         .append("g")
     		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var xScale = d3.scale.linear()
-      		.domain([1, 22])
+      		.domain([1, 20])
       		.range([0, width]);
 
       	var yScale = d3.scale.linear()
@@ -87,29 +114,71 @@
 
       	var xAxis = d3.svg.axis()
     		.tickFormat(function(d) { return d; })
-    		.scale(xScale);
+    		.scale(xScale)
+    		.orient("bottom")
+    		.ticks(20);
 
       	svg.append("g")
- 			.attr("class", "axis")
+ 			.attr("class", "x axis")
  			.attr("transform", "translate(0, " + height + ")")
  			.call(xAxis)
 
-        svg.selectAll("circle")
+ 		var yAxis = d3.svg.axis()
+ 			.scale(yScale)
+ 			.orient("left")
+ 			.tickFormat(function(d){
+ 				return "£" + (d)});
+
+ 		svg.append("g")
+ 			.attr("class", "y axis")
+ 			.attr("transform", "translate( -60 ,0)")
+			.call(yAxis)
+
+        var team = svg.selectAll(".team")
    			.data(data)
-  			.enter()
-   			.append("circle")
-   		.attr("cx", function(d, i) {
-        	return xScale(d["Total.Seasons"]);
-   		})
-   		.attr("cy", function(d) {
-        	return yScale(d["Wages"]);
-   		})
-   		.attr("r", function(d) {
-   			//return Math.sqrt(d["Income"]);
-   			return (d["Income"])/5;
-   		});
+  			.enter().append("g")
+  			.attr("class", "team")
+  			.attr("transform", function(d){
+  				return "translate(" + xScale(d["Position"]) + "," + yScale(d["Wages"]) + ")"
+  			});
+
+  		team.append("circle")
+	   		.attr("r", function(d) {
+	   			return (Math.sqrt(d["Income"]) * 4);
+	   		});
+
+   		team.append("text")
+   			.text(function(d) { return d.Club; })
+
+   		var position = svg.selectAll(".position")
+   			.data(data)
+   			.enter()
+   			.append("g")
+   			.attr("class", "team")
+   			.attr("transform", function(d){
+   				return "translate(" + xScale(d["Position"]) + "," + yScale(d["Wages"]) + ")"
+   			});
+
+   		position.append("text")
+   			.text(function(d) {return d.Position; })
+
+   		svg.append("line")
+			.attr("class", "line")
+			.attr("x1", xScale(17.5))
+			.attr("y1", yScale(0))
+			.attr("x2", xScale(17.5))
+			.attr("y2", yScale(250));
+
+		svg.append("line")
+			.attr("class", "line")
+			.attr("x1", xScale(4.5))
+			.attr("y1", yScale(0))
+			.attr("x2", xScale(4.5))
+			.attr("y2", yScale(250));
 
 		});
+
+			
 
 	</script>
 
