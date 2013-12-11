@@ -22,6 +22,11 @@
     line-height: 1.3em;
 
     }
+    h4{
+      position:absolute;
+      left:120px;
+      top:23px;
+    }
 
 		#intro {
       position: absolute;
@@ -50,7 +55,7 @@
 		}
 		
 		.axis text {
-			font-family: sans-serif;
+			font-family: Helvetica;
 			font-size: 11px;
 		}
 
@@ -99,6 +104,18 @@
       stroke-width:3px;
     }
 
+    .annotation-line {
+      fill:none;
+      stroke:#ccc;
+      stroke-width:1px;
+    }
+
+    .annotation {
+      font-family: Helvetica;
+      font-size: 11px;
+      text-anchor: middle;
+    }
+
 	</style>
 
 </head>
@@ -106,17 +123,17 @@
 	<div id="intro">
 	<h1>Buying a Spot in Soccer's Top Flight</h1>
 	<p>
-		The Premier League is the biggest soccer competition in England, with high stakes. If a team finishes in the bottom three, they're "relegated" from the league -- demoted to a minor league. Year to year, the same five clubs tend to dominate the competition, subjecting the league to critcism of wealth inequities.
+		The English Premier League is the biggest soccer competition in the country, with high stakes. If a team finishes in the bottom three, they're "relegated" from the league -- demoted to a minor league. Year to year, the same five clubs tend to dominate the competition, subjecting the league to critcism of wealth inequities.
 	</p>
 	<p>
 		With no spending caps, the top teams can pay any amount of money to acquire the world's top talent, while smaller teams often languish and face relegation. Can a club buy survival in the Premier League?
 	</p>
-
-	<h4>
-		2011-12 Season placement compared to total player wages 
-	</h4>
 	
 	</div>
+
+  <h4>
+    2011-12 EPL season results compared <br /> to total player wages (in millions)
+  </h4>
 
 	<script type="text/javascript">
 		d3.csv("data.csv", function(data){
@@ -189,7 +206,7 @@
       //champions league
     svg.append("rect")
       .attr("class", "g-bg-rect g-ucl")
-      .attr("width", xScale(4.5))
+      .attr("width", xScale(5.5))
       .attr("x", xScale(0))
       .attr("height", (height));
 
@@ -220,17 +237,6 @@
   			.attr("transform", function(d){
   				return "translate(" + xScale(d.Position) + "," + height + ")"
   			});
-
-
-
-
-      // svg.append("line")
-      // .attr("x1", x(1917))
-      // .attr("y1", y(3.46))
-      // .attr("x2", x(1917))
-      // .attr("y2", y(1) - 13)
-      // .classed("annotation-line",true);
-
 
   		//bouncing
 		team.transition().duration(1000).delay(function(d, i){ return i * 10; })
@@ -278,6 +284,68 @@
         .attr("text-anchor", "middle")
         .attr("font-size", ".6em")
 
+      //MAN CITY ANNOTATION
+      svg.append("line")
+        .attr("x1", xScale(0.7))
+        .attr("y1", yScale(183))
+        .attr("x2", xScale(0.7))
+        .attr("y2", yScale(110))
+        .classed("annotation-line",true);
+
+      svg.selectAll(".note")
+            .data([
+              "One of the wealthiest clubs",
+              "in the league, Man. City won",
+              "its first league title in 44 years."
+            ])
+          .enter().append("text")
+          .classed("annotation", true)
+          .attr("x", xScale(1.5))
+          .attr("y", yScale(106))
+          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+          .text(function(d) { return d; });
+
+      //CHELSEA ANNOTION
+      svg.append("line")
+        .attr("x1", xScale(6))
+        .attr("y1", yScale(193))
+        .attr("x2", xScale(6))
+        .attr("y2", yScale(213))
+        .classed("annotation-line",true);
+
+      svg.selectAll(".note")
+            .data([
+              "During the January transfer window,",
+              "Chelsea spent \u00A350 million on forward",
+              "Fernando Torres, a terrible flop."
+            ])
+          .enter().append("text")
+          .classed("annotation", true)
+          .attr("x", xScale(6))
+          .attr("y", yScale(225))
+          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+          .text(function(d) { return d; });
+
+      //SWANSEA ANNOTION
+      svg.append("line")
+        .attr("x1", xScale(11))
+        .attr("y1", yScale(45))
+        .attr("x2", xScale(11))
+        .attr("y2", yScale(90))
+        .classed("annotation-line",true);
+
+      svg.selectAll(".note")
+            .data([
+              "The newly promoted Swansea has",
+              "gained a reputation for finding",
+              "bargain players in the transfer window."
+            ])
+          .enter().append("text")
+          .classed("annotation", true)
+          .attr("x", xScale(11))
+          .attr("y", yScale(101))
+          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+          .text(function(d) { return d; });
 
 		});
 
