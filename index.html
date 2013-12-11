@@ -2,20 +2,34 @@
 <head>
 	<title>Premier League</title>
 
-	<script src="http://d3js.org/d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="d3.v3.min.js" type="text/javascript" charset="utf-8"></script>
 
 	<style type="text/css">
+
+    body {
+    font-family:georgia;
+    width: 1400px;
+    margin: 20px auto;
+    }
+
 		h1 {
-			margin-left: 50px;
-		}
-		#intro {
-			position: absolute;
-			left: 650px;
-			width: 500px;
+      font-weight: normal;
+      font-size: 40px;
 		}
 
-		svg {
-			position: relative;
+    p {
+    font-size: 17px;
+    line-height: 1.3em;
+
+    }
+
+		#intro {
+      position: absolute;
+      left: 700px;
+      width: 600px;
+      z-index: 100;
+      background-color:white;
+      padding:5px;
 		}
 
 		.domain {
@@ -23,36 +37,42 @@
 			stroke: black;
 		}
 
-		.axis path,
-		.axis line {
-			fill: none;
-			stroke: black;
+		.axis {
 			shape-rendering: crispEdges;
 		}
 
+		.x.axis line {
+			stroke: none;
+		}
+
+		.y.axis path {
+			display: none;
+		}
+		
 		.axis text {
 			font-family: sans-serif;
 			font-size: 11px;
 		}
 
-		.tick line {
-			stroke: black;
+		.axis .minor line {
+			stroke: #777;
+      stroke-dasharray: 2,2;
 		}
-
-		.tick line {
-			font-size: 10px;
-		}
-
+ 
 		circle {
-			fill: cyan;
-			stroke: blue;
-			opacity:0.3;
-			filter:alpha(opacity=40); /* For IE8 and earlier */
+      fill:#71C8F1;
+      stroke: #fff;
+      stroke-width: 2px;
 		}
 
-		.team {
+		.club {
 			font-family: Helvetica;
-			font-size: 10px;
+		}
+
+		.wages {
+			font-family: Helvetica;
+			font-size: 30px;
+			font-color:red;
 		}
 
 		.line {
@@ -61,12 +81,30 @@
 			opacity: 0.3;
 		}
 
+    .g-bg-rect {
+      opacity:.8;
+    }
+
+    .g-relegation {
+      fill:#dedede;
+    }
+
+    .g-ucl {
+      fill:#dedede;
+    }
+
+    .stem {
+      fill:none;
+      stroke:#ccc;
+      stroke-width:3px;
+    }
+
 	</style>
 
 </head>
 <body>
 	<div id="intro">
-	<h1>Buying a spot in the top flight</h1>
+	<h1>Buying a Spot in Soccer's Top Flight</h1>
 	<p>
 		The Premier League is the biggest soccer competition in England, with high stakes. If a team finishes in the bottom three, they're "relegated" from the league -- demoted to a minor league. Year to year, the same five clubs tend to dominate the competition, subjecting the league to critcism of wealth inequities.
 	</p>
@@ -83,18 +121,25 @@
 	<script type="text/javascript">
 		d3.csv("data.csv", function(data){
 			data.forEach(function(d) {
-				d["Total.Seasons"] = +d["Total.Seasons"];
-	        	d["Wages"] = +d["Wages"];
-	        	d["Income"] = +d["Income"];
-	        	d["Position"] = +d["Position"];
-	        	d["Club"] = d["Club"];
+	        	d.Wages = +d.Wages;
+	        	d.Income = +d.Income;
+	        	d.Position = +d.Position;
+	        	d.Club = d.Club;
 	        });
-  			console.log(data);
+
+      data.sort(function(a,b) {
+        return b.Position - a.Position;
+      })
 
 
-  		var margin = {top: 20, right: 100, bottom: 20, left: 100};
-    		width = 1500 - margin.left - margin.right,
+  		var wagesConv = d3.format("d");
+
+
+  		var margin = {top: 20, right: 200, bottom: 20, left: 100};
+    		width = 1400 - margin.left - margin.right,
     		height = 800 - margin.top - margin.bottom;
+
+
 
   		//Create SVG element
 		var svg = d3.select("body")
@@ -112,69 +157,127 @@
       		.domain([0, 250])
       		.range([height, 0]);
 
+		//x axis      	
       	var xAxis = d3.svg.axis()
     		.tickFormat(function(d) { return d; })
     		.scale(xScale)
     		.orient("bottom")
     		.ticks(20);
 
-      	svg.append("g")
+    svg.append("g")
  			.attr("class", "x axis")
  			.attr("transform", "translate(0, " + height + ")")
- 			.call(xAxis)
-
+ 			.call(xAxis);
+		
+ 		//y axis
  		var yAxis = d3.svg.axis()
  			.scale(yScale)
  			.orient("left")
  			.tickFormat(function(d){
- 				return "£" + (d)});
+ 				return "\u00A3" + (d);
+ 			})
+      .tickSize( -width - margin.left);
 
  		svg.append("g")
- 			.attr("class", "y axis")
- 			.attr("transform", "translate( -60 ,0)")
-			.call(yAxis)
+ 			  .attr("class", "y axis")
+ 			  .attr("transform", "translate( -60 ,0)")
+        .call(yAxis)
+    .selectAll("g").filter(function(d) { return d; })
+      .classed("minor", true);
 
-        var team = svg.selectAll(".team")
+    //rectangles
+      //champions league
+    svg.append("rect")
+      .attr("class", "g-bg-rect g-ucl")
+      .attr("width", xScale(4.5))
+      .attr("x", xScale(0))
+      .attr("height", (height));
+
+      //relegation
+    svg.append("rect")
+      .attr("class", "g-bg-rect g-relegation")
+      .attr("width", xScale(4))
+      .attr("x", xScale(17.5))
+      //.attr("height", (height));
+      .attr("y", yScale(120))
+      .attr("height", yScale(0) - yScale(120));
+
+  //draw stems
+  var stem = svg.selectAll(".stem")
+    .data(data)
+  .enter().append("line")
+    .attr("x1", function(d) { return xScale(d.Position); })
+    .attr("y1", yScale(0))
+    .attr("x2", function(d) { return xScale(d.Position) })
+    .attr("y2", function(d) { return yScale(d.Wages) })
+    .classed("stem",true);
+
+		//data join
+        var team = svg.selectAll(".club")
    			.data(data)
   			.enter().append("g")
   			.attr("class", "team")
   			.attr("transform", function(d){
-  				return "translate(" + xScale(d["Position"]) + "," + yScale(d["Wages"]) + ")"
+  				return "translate(" + xScale(d.Position) + "," + height + ")"
   			});
 
+
+
+
+      // svg.append("line")
+      // .attr("x1", x(1917))
+      // .attr("y1", y(3.46))
+      // .attr("x2", x(1917))
+      // .attr("y2", y(1) - 13)
+      // .classed("annotation-line",true);
+
+
+  		//bouncing
+		team.transition().duration(1000).delay(function(d, i){ return i * 10; })
+			.ease(d3.ease("bounce"))
+  			.attr("transform", function(d){
+  				return "translate(" + xScale(d.Position) + "," + yScale(d.Wages) + ")"
+  			});
+
+  		//sets radius
   		team.append("circle")
 	   		.attr("r", function(d) {
-	   			return (Math.sqrt(d["Income"]) * 4);
+	   			return (Math.sqrt(d.Wages) * 4);
 	   		});
 
+	   	//club name
    		team.append("text")
-   			.text(function(d) { return d.Club; })
+   			.text(function(d) { return d.Position + ". " + d.Club; })
+   			.attr("x", function(d) { return (Math.sqrt(d.Wages) * 4) + 3 })
+   			.attr("class", "club")
+   			.style("font-size", "12px" )
+   			.text(function(d) {
+   				return d.Position + ". " + d.Club
+   			})
+        .attr("transform", function(d){
+            // if (d.Position <= 9){
+            //   return "rotate(90)"
+            // } else {
+            //   return "rotate(-90)"
+            // }
+            return "rotate(-35)"
+        })
 
-   		var position = svg.selectAll(".position")
-   			.data(data)
-   			.enter()
-   			.append("g")
-   			.attr("class", "team")
-   			.attr("transform", function(d){
-   				return "translate(" + xScale(d["Position"]) + "," + yScale(d["Wages"]) + ")"
-   			});
+   		//inner labels
+   		team.append("text")
+   			.text(function(d) {return "\u00A3" + d.Wages })
+   			.attr("class", "wages")
+   			.attr("dy", "0.3em")
+   			.attr("text-anchor", "middle")
+   			.style("font-size", function(d) { return Math.sqrt(d.Wages) * 2; })
 
-   		position.append("text")
-   			.text(function(d) {return d.Position; })
+      team.append("text")
+        .text(function(d) {return "$" + parseFloat(d.Wages *1.64).toFixed(2)})
+        .attr("class", "dollars")
+        .attr("dy", function(d) { return Math.sqrt(d.Wages) * 1.8})
+        .attr("text-anchor", "middle")
+        .attr("font-size", ".6em")
 
-   		svg.append("line")
-			.attr("class", "line")
-			.attr("x1", xScale(17.5))
-			.attr("y1", yScale(0))
-			.attr("x2", xScale(17.5))
-			.attr("y2", yScale(250));
-
-		svg.append("line")
-			.attr("class", "line")
-			.attr("x1", xScale(4.5))
-			.attr("y1", yScale(0))
-			.attr("x2", xScale(4.5))
-			.attr("y2", yScale(250));
 
 		});
 
