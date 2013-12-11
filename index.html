@@ -6,6 +6,11 @@
 
 	<style type="text/css">
 
+    div.chart {
+      position:relative;
+      padding:0px;
+    }
+
     body {
     font-family:georgia;
     width: 1400px;
@@ -18,23 +23,22 @@
 		}
 
     p {
-    font-size: 17px;
-    line-height: 1.3em;
-
+      font-size: 17px;
+      line-height: 1.3em;
     }
     h4{
       position:absolute;
       left:120px;
-      top:23px;
+      top:5px;
     }
 
 		#intro {
       position: absolute;
       left: 700px;
+      top:0px;
       width: 600px;
       z-index: 100;
       background-color:white;
-      padding:5px;
 		}
 
 		.domain {
@@ -118,13 +122,15 @@
 
     #source {
       position:absolute;
-      top:810px;
-      left:1190px;
+      top:800px;
+      left:1110px;
     }
 	</style>
 
 </head>
 <body>
+
+<div class="chart">
 	<div id="intro">
 	<h1>Buying a Spot in Soccer's Top Flight</h1>
 	<p>
@@ -356,9 +362,11 @@
 
   </script>
 
-<p class="annotation" id="source">
-  Source: <a href="http://www.theguardian.com/news/datablog/2013/apr/18/premier-league-club-accounts-debt" target="blank">The Guardian</a>
-</p>
+  <p class="annotation" id="source">
+    Source: <a href="http://www.theguardian.com/news/datablog/2013/apr/18/premier-league-club-accounts-debt" target="blank">The Guardian</a>
+  </p>
+
+</div>
 
 			
 
