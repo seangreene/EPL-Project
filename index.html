@@ -358,6 +358,28 @@
           .attr("dy", function(d, i) { return i * 1.3 + "em"; })
           .text(function(d) { return d; });
 
+
+      svg.selectAll(".note")
+            .data([
+              "UEFA Champion's League Qualification"
+            ])
+          .enter().append("text")
+          .classed("annotation", true)
+          .attr("x", xScale(2.5))
+          .attr("y", yScale(7))
+          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+          .text(function(d) { return d; });
+
+      svg.selectAll(".note")
+            .data([
+              "Relegation zone"
+            ])
+          .enter().append("text")
+          .classed("annotation", true)
+          .attr("x", xScale(19))
+          .attr("y", yScale(7))
+          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+          .text(function(d) { return d; });
 		});
 
   </script>
