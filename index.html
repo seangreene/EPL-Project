@@ -120,9 +120,28 @@
     .annotation {
       font-family: Helvetica;
       font-size: 11px;
-      text-anchor: middle;
-        text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+      text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+    }
 
+    #ManCity {
+      position:absolute;
+      left:60px;
+      top:439px;
+      width:150px;
+    }
+
+    #Chelsea {
+      position:absolute;
+      width:200px;
+      left:305px;
+      top:72px;
+    }
+
+    #Swansea {
+      position: absolute;
+      width: 155px;
+      left: 615px;
+      top: 437px;
     }
 
     .zone-label {
@@ -309,39 +328,39 @@
         .attr("y2", yScale(110))
         .classed("annotation-line",true);
 
-      svg.selectAll(".note")
-            .data([
-              "One of the wealthiest clubs",
-              "in the league, Man. City won",
-              "its first league title in 44 years."
-            ])
-          .enter().append("text")
-          .classed("annotation", true)
-          .attr("x", xScale(1.5))
-          .attr("y", yScale(106))
-          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
-          .text(function(d) { return d; });
+      // svg.selectAll(".note")
+      //       .data([
+      //         "One of the wealthiest clubs",
+      //         "in the league, Man. City won",
+      //         "its first league title in 44 years."
+      //       ])
+      //     .enter().append("text")
+      //     .classed("annotation", true)
+      //     .attr("x", xScale(1.5))
+      //     .attr("y", yScale(106))
+      //     .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+      //     .text(function(d) { return d; });
 
       //CHELSEA ANNOTION
       svg.append("line")
         .attr("x1", xScale(6))
-        .attr("y1", yScale(193))
+        .attr("y1", yScale(191))
         .attr("x2", xScale(6))
-        .attr("y2", yScale(213))
+        .attr("y2", yScale(210))
         .classed("annotation-line",true);
 
-      svg.selectAll(".note")
-            .data([
-              "During the January transfer window,",
-              "Chelsea spent \u00A350 million on forward",
-              "Fernando Torres, a terrible flop."
-            ])
-          .enter().append("text")
-          .classed("annotation", true)
-          .attr("x", xScale(6))
-          .attr("y", yScale(225))
-          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
-          .text(function(d) { return d; });
+      // svg.selectAll(".note")
+      //       .data([
+      //         "During the January transfer window,",
+      //         "Chelsea spent \u00A350 million on forward",
+      //         "Fernando Torres, a terrible flop."
+      //       ])
+      //     .enter().append("text")
+      //     .classed("annotation", true)
+      //     .attr("x", xScale(6))
+      //     .attr("y", yScale(225))
+      //     .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+      //     .text(function(d) { return d; });
 
       //SWANSEA ANNOTION
       svg.append("line")
@@ -351,18 +370,18 @@
         .attr("y2", yScale(90))
         .classed("annotation-line",true);
 
-      svg.selectAll(".note")
-            .data([
-              "The newly promoted Swansea has",
-              "gained a reputation for finding",
-              "bargain players in the transfer window."
-            ])
-          .enter().append("text")
-          .classed("annotation", true)
-          .attr("x", xScale(11))
-          .attr("y", yScale(101))
-          .attr("dy", function(d, i) { return i * 1.3 + "em"; })
-          .text(function(d) { return d; });
+      // svg.selectAll(".note")
+      //       .data([
+      //         "The newly promoted Swansea has",
+      //         "gained a reputation for finding",
+      //         "bargain players in the transfer window."
+      //       ])
+      //     .enter().append("text")
+      //     .classed("annotation", true)
+      //     .attr("x", xScale(11))
+      //     .attr("y", yScale(101))
+      //     .attr("dy", function(d, i) { return i * 1.3 + "em"; })
+      //     .text(function(d) { return d; });
 
       //ZONE LABELS
       svg.selectAll(".note")
@@ -389,6 +408,24 @@
 		});
 
   </script>
+
+  <div id="ManCity">
+    <p class="annotation">
+      One of the wealthiest clubs in the league, Man. City won its first league title in 44 years.
+    </p>
+  </div>
+
+  <div id="Chelsea">
+    <p class="annotation">
+      During the January transfer window, &pound;50 million ($82 million) on forward Fernando Torres, a move which would come to be known as a terrible flop.
+    </p>
+  </div>
+
+  <div id="Swansea">
+      <p class="annotation">
+        Newly promoted to the league this season, Swansea gained a reptuation for purchasing quality players for bargain prices.
+      </p>
+  </div>
 
   <p class="annotation" id="source">
     Source: <a href="http://www.theguardian.com/news/datablog/2013/apr/18/premier-league-club-accounts-debt" target="blank">The Guardian</a>
